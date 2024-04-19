@@ -1,4 +1,6 @@
-# CFHM_Project
+# Computing for Health & Medicine - Project
+
+# Chest X-Ray Report Generation using CLIP model
  
 ## Data Preprocessing
 
