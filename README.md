@@ -40,7 +40,7 @@ Labeled reports for the test set are provided in the mimic-cxr-2.0.0-chexpert.cs
 
 ## Pre-trained CLIP model
 
-The CLIP model checkpoint pre-trained on MIMIC-CXR train set is available here [CLIP weights]{https://stanfordmedicine.app.box.com/s/dbebk0jr5651dj8x1cu6b6kqyuuvz3ml}
+The CLIP model checkpoint pre-trained on MIMIC-CXR train set is available here [CLIP weights](https://stanfordmedicine.app.box.com/s/dbebk0jr5651dj8x1cu6b6kqyuuvz3ml)
 
 ## Generate embeddings for the train corpus
 
@@ -66,7 +66,7 @@ python run_test.py \
 
 ## Generating labels for generated reports
 
-Use [CheXbert]{https://github.com/stanfordmlgroup/CheXbert/tree/master} to generate prediction labels for the generated reports.
+Use [CheXbert](https://github.com/stanfordmlgroup/CheXbert/tree/master) to generate prediction labels for the generated reports.
 
 ```
 python label.py -d={path to generated reports} -o={path to output dir} -c={path to checkpoint}
