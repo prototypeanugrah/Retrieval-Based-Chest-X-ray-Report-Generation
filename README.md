@@ -3,7 +3,7 @@
 ## Data Preprocessing
 
 ### Data access
-In order to run the scripts in this repository, you must have access to the MIMIC-CXR and MIMIC-CXR-JPG databases.
+In order to run the scripts in this repository, you must have access to the [MIMIC-CXR](https://physionet.org/content/mimic-cxr/2.0.0/files/#files-panel) and [MIMIC-CXR-JPG](https://physionet.org/content/mimic-cxr-jpg/2.1.0/) databases.
 Once you have access to these databases, you will have access to the train/test splits, the images and the radiology reports.
 
 ### Create data split
