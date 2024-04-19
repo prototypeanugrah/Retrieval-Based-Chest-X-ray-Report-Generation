@@ -104,3 +104,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     main(args)
+    
+    # Code to run this script:
+    # python gen_corpus_embeddings.py --clip_model_path clip_pretrained.pt --data_path splits/mimic_train_sentence_impressions.csv --output_saved_model mimic_train_embeddings.pt

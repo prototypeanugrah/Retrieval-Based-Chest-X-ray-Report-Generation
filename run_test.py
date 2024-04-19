@@ -152,7 +152,7 @@ if __name__ == "__main__":
         type=int,
         required=False,
         default=1,
-        help="Number of top sentences to retrieve",
+        help="number of top sentences to retrieve",
     )
     parser.add_argument(
         "--clip_pretrained",
