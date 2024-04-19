@@ -6,22 +6,33 @@ from tqdm import tqdm
 import argparse
 
 
-def get_mimic_train_test_split(mimic_cxr_jpg_split_path):
+def main(args):
+    if not os.path.exists(args.out_dir):
+        os.makedirs(args.out_dir)
+
+    train_path = os.path.join(args.out_dir, "mimic_train_full.csv")
+    test_path = os.path.join(args.out_dir, "mimic_test_full.csv")
+
+    train_ids, test_ids = get_mimic_train_test_split(args.split_path)
+
+    generate_mimic_train_test_csv(args.report_files_dir, train_ids, train_path)
+    generate_mimic_train_test_csv(args.report_files_dir, test_ids, test_path)
+
+
+def get_mimic_train_test_split(mimic_split_path):
     """
-    Splits MIMIC-CXR DICOM IDs, study IDs, subject IDs into train/test sets.
-    Splits according to MIMIC-CXR-JPG recommended splits.
+    Get the train and test splits of the MIMIC-CXR dataset.
 
     Args:
-      mimic_cxr_jpg_split_path: Full path of mimic split (ending in mimic-cxr-2.0.0-split.csv.gz)
+        mimic_split_path: Path to the split file in the MIMIC-CXR-JPG dataset.
 
     Returns:
-        Train and test lists of DICOM IDs, study IDs and subject IDs (with duplicates).
+        train_ids: List of DICOM IDs, study IDs, and subject IDs in the train split.
+        test_ids: List of DICOM IDs, study IDs, and subject IDs in the test split.
     """
     train_ids, test_ids = [], []
 
-    with gzip.open(
-        mimic_cxr_jpg_split_path, "rb"
-    ) as f:  # Read the split file as a gzip file
+    with gzip.open(mimic_split_path, "rb") as f:  # Read the split file as a gzip file
         skip_header = True  # Skip the header of the file
 
         for sample_raw in f:
@@ -37,22 +48,25 @@ def get_mimic_train_test_split(mimic_cxr_jpg_split_path):
             elif split == "test":
                 test_ids.append((dicom_id, study_id, subject_id))
             else:
-                raise Exception(f"Unknown split label {split}.")
+                raise Exception(f"Invalid split: {split}")
 
-        print(f"train study IDs: {len(train_ids)}\n" f"test study IDs: {len(test_ids)}")
+        print(f"Train IDs: {len(train_ids)}")
+        print(f"Test IDs: {len(test_ids)}")
 
     return train_ids, test_ids
 
 
 def generate_mimic_train_test_csv(report_files_dir, split_ids, csv_path):
     """
-    Generates MIMIC-CXR reports of `split_ids` as a CSV file.
-    The CSV contains [DICOM ID, study ID, subject ID, raw report text].
+    Generates a CSV file containing the full reports of the MIMIC-CXR train/test splits.
 
     Args:
-        report_files_dir: Directory containing all reports.
-        split_ids: List of (DICOM ID, study ID, subject ID) tuples.
+        report_files_dir: Directory containing all the reports.
+        split_ids: List of DICOM IDs, study IDs, and subject IDs.
         csv_path: Path to save the CSV file.
+
+    Returns:
+        None
     """
     reports = []
     report_files = glob.glob(
@@ -103,13 +117,4 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    if not os.path.exists(args.out_dir):
-        os.makedirs(args.out_dir)
-
-    train_path = os.path.join(args.out_dir, "mimic_train_full.csv")
-    test_path = os.path.join(args.out_dir, "mimic_test_full.csv")
-
-    train_ids, test_ids = get_mimic_train_test_split(args.split_path)
-
-    generate_mimic_train_test_csv(args.report_files_dir, train_ids, train_path)
-    generate_mimic_train_test_csv(args.report_files_dir, test_ids, test_path)
+    main(args)

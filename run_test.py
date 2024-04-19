@@ -14,9 +14,9 @@ import clip
 def main(args):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    # load in model
+    # load the model
     model, _ = clip.load("ViT-B/32", device=device, jit=False)
-    print("Loaded in pretrained model.")
+    print("Loaded in CLIP model.")
 
     model.load_state_dict(torch.load(args.clip_model_path, map_location=device))
     model = model.to(device)
@@ -24,7 +24,7 @@ def main(args):
     # corpus clip embeddings
     corpus_embeddings_path = args.corpus_embeddings_path
     raw_impressions, text_embeddings = get_text_embeddings(corpus_embeddings_path)
-    print("Loaded in corpus embeddings and impressions.")
+    print("Loaded in text embeddings.")
 
     dataset = MIMICImageDataset(img_path=args.cxr_path)  # load in dataset
     data_loader = DataLoader(

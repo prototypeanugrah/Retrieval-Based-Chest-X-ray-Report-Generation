@@ -7,8 +7,6 @@ from tqdm import tqdm
 
 import clip
 
-from utils import nonpretrained_params
-
 
 def encode_texts(impressions, model, device):
     """
@@ -36,7 +34,7 @@ def main(args):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     model, _ = clip.load("ViT-B/32", device=device, jit=False)  # Load the model
-    print("Loaded in pretrained model.")
+    print("Loaded in CLIP model.")
 
     print(f"Model context length: {model.context_length}")  # 77
     model.load_state_dict(

@@ -6,7 +6,7 @@ import os
 # """Finds line index that is the start of the section."""
 
 
-def section_start(lines, section=" IMPRESSION"):
+def sec_start(lines, section=" IMPRESSION"):
     """
     Given a list of lines, find the index of the line that starts the section.
 
@@ -25,7 +25,7 @@ def section_start(lines, section=" IMPRESSION"):
     # """Generates a csv containing report impressions."""
 
 
-def generate_whole_report_impression_csv(df, split, dir):
+def gen_full_report_csv(df, split, dir):
     """
     Given a dataframe, generates a csv containing the impression section of the report.
 
@@ -38,25 +38,23 @@ def generate_whole_report_impression_csv(df, split, dir):
     for index, row in df_imp.iterrows():
         report = row["report"].splitlines()
 
-        impression_idx = section_start(
+        imp_idx = sec_start(
             report
         )  # Find the index of the start of the section starting with 'IMPRESSION:'
-        impression_and_findings_idx = section_start(
+        imp_find_idx = sec_start(
             report, section=" FINDINGS AND IMPRESSION:"
         )  # Find the index of the start of the section starting with 'FINDINGS AND IMPRESSION:'
-        seperator = ""
-        if impression_idx != -1:  # If the impression index is found
+        sep = ""
+        if imp_idx != -1:  # If the impression index is found
             impression = (
-                seperator.join(report[impression_idx:])
+                sep.join(report[imp_idx:])
                 .replace("IMPRESSION:", "")
                 .replace("\n", "")
                 .strip()
             )
-        elif (
-            impression_and_findings_idx != -1
-        ):  # If the impression and findings index is found
+        elif imp_find_idx != -1:  # If the impression and findings index is found
             impression = (
-                seperator.join(report[impression_and_findings_idx:])
+                sep.join(report[imp_find_idx:])
                 .replace("FINDINGS AND IMPRESSION:", "")
                 .replace("\n", "")
                 .strip()
@@ -75,7 +73,7 @@ def generate_whole_report_impression_csv(df, split, dir):
     # """Generates a csv containing all impression sentences."""
 
 
-def generate_sentence_level_impression_csv(df, split, dir, tokenizer):
+def gen_sentence_imp_csv(df, split, dir, tokenizer):
     """
     Given a dataframe, generates a csv containing all impression sentences.
 
@@ -89,25 +87,23 @@ def generate_sentence_level_impression_csv(df, split, dir, tokenizer):
     for index, row in df.iterrows():
         report = row["report"].splitlines()
 
-        impression_idx = section_start(
+        imp_idx = sec_start(
             report
         )  # Find the index of the start of the section starting with 'IMPRESSION:'
-        impression_and_findings_idx = section_start(
+        imp_find_idx = sec_start(
             report, section=" FINDINGS AND IMPRESSION:"
         )  # Find the index of the start of the section starting with 'FINDINGS AND IMPRESSION:'
-        seperator = ""
-        if impression_idx != -1:  # If the impression index is found
+        sep = ""
+        if imp_idx != -1:  # If the impression index is found
             impression = (
-                seperator.join(report[impression_idx:])
+                sep.join(report[imp_idx:])
                 .replace("IMPRESSION:", "")
                 .replace("\n", "")
                 .strip()
             )
-        elif (
-            impression_and_findings_idx != -1
-        ):  # If the impression and findings index is found
+        elif imp_find_idx != -1:  # If the impression and findings index is found
             impression = (
-                seperator.join(report[impression_and_findings_idx:])
+                sep.join(report[imp_find_idx:])
                 .replace("FINDINGS AND IMPRESSION:", "")
                 .replace("\n", "")
                 .strip()
@@ -160,7 +156,7 @@ def split_sentences(report, tokenizer):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Extract the impression section and generate csvs for report level and sentence level."
+        description="Extract impression sections from reports at full report and sentence levels."
     )
     parser.add_argument(
         "--dir",
@@ -177,8 +173,8 @@ if __name__ == "__main__":
     test_df = pd.read_csv(test_path)
 
     # whole reports
-    generate_whole_report_impression_csv(train_df, "train", args.dir)
-    generate_whole_report_impression_csv(test_df, "test", args.dir)
+    gen_full_report_csv(train_df, "train", args.dir)
+    gen_full_report_csv(test_df, "test", args.dir)
 
     try:
         nltk.data.find("tokenizers/punkt")
@@ -186,4 +182,4 @@ if __name__ == "__main__":
         nltk.download("punkt")
     # sentences
     tokenizer = nltk.data.load("tokenizers/punkt/english.pickle")
-    generate_sentence_level_impression_csv(train_df, "train", args.dir, tokenizer)
+    gen_sentence_imp_csv(train_df, "train", args.dir, tokenizer)
