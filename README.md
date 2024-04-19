@@ -93,4 +93,4 @@ python test_acc.py --dir mimic_results/ --gt_labels_path bootstrap_test/
 python test_acc_batch.py --dir mimic_results/ --bootstrap_dir bootstrap_test/
 ```
 
-Mean F1 score achieved on bootstrapped test data is 0.123$\pm$0.002
+Mean F1 score achieved on bootstrapped test data is 0.123 +/- 0.002
