@@ -8,6 +8,14 @@ import numpy as np
 
 
 def filter_csv(input_csv, output_csv, train_test):
+    """
+    Filter out rows with NaN values in the 'report' column and save the filtered dataframe to a new csv file.
+
+    Args:
+        input_csv (CSV file): CSV file containing the reports
+        output_csv (CSV file): CSV file to save the filtered reports
+        train_test (str): Whether the input_csv is for train or test set
+    """
     if train_test == "test":
         df = pd.read_csv(input_csv, index_col=[0])
     else:
@@ -22,6 +30,16 @@ def create_cxr_h5(reports_path, cxr_files_dir, cxr_outpath):
 
 
 def get_cxr_paths(reports_path, cxr_files_dir):
+    """
+    Get the paths of the chest X-ray images from the reports file.
+
+    Args:
+        reports_path (str): Path to the reports file
+        cxr_files_dir (str): Directory containing the chest X-ray images
+
+    Returns:
+        cxr_paths (list): List of paths to the chest X-ray images
+    """
     df = pd.read_csv(reports_path)
     df["Path"] = (
         cxr_files_dir
@@ -40,6 +58,14 @@ def get_cxr_paths(reports_path, cxr_files_dir):
 
 
 def img_to_hdf5(cxr_paths, out_filepath, resolution=320):
+    """
+    Convert the chest X-ray images to an h5 file.
+
+    Args:
+        cxr_paths (list): List of paths to the chest X-ray images
+        out_filepath (str): Path to save the h5 file
+        resolution (int): Resolution to resize the images
+    """
     dset_size = len(cxr_paths)
     with h5py.File(out_filepath, "w") as h5f:
         img_dset = h5f.create_dataset("cxr", shape=(dset_size, resolution, resolution))
@@ -51,6 +77,16 @@ def img_to_hdf5(cxr_paths, out_filepath, resolution=320):
 
 
 def preprocess(img, desired_size):
+    """
+    Preprocess the image by resizing it to the desired size.
+
+    Args:
+        img (PIL Image): Image to be resized
+        desired_size (int): Size to resize the image
+
+    Returns:
+        new_img (PIL Image): Resized image
+    """
     old_size = img.size
     ratio = float(desired_size) / max(old_size)
     new_size = tuple([int(x * ratio) for x in old_size])
@@ -65,6 +101,13 @@ def preprocess(img, desired_size):
 
 
 def create_bootstrap_indices(bootstrap_dir, n=10):
+    """
+    Create n bootstrap indices and save them to separate directories.
+
+    Args:
+        bootstrap_dir (str): Directory to save the bootstrap indices
+        n (int): Number of bootstrap indices to create
+    """
     test_h5_path = os.path.join(bootstrap_dir, "mimic_cxr_test.h5")
     h5 = h5py.File(test_h5_path, "r")["cxr"]
     dset_size = len(h5)

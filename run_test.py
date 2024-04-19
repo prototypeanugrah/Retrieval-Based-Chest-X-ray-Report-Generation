@@ -15,9 +15,8 @@ def main(args):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     # load in model
-    if args.clip_pretrained:
-        model, _ = clip.load("ViT-B/32", device=device, jit=False)
-        print("Loaded in pretrained model.")
+    model, _ = clip.load("ViT-B/32", device=device, jit=False)
+    print("Loaded in pretrained model.")
 
     model.load_state_dict(torch.load(args.clip_model_path, map_location=device))
     model = model.to(device)
@@ -27,16 +26,18 @@ def main(args):
     raw_impressions, text_embeddings = get_text_embeddings(corpus_embeddings_path)
     print("Loaded in corpus embeddings and impressions.")
 
-    dset = MIMICImageDataset(
-        img_path=args.cxr_path, clip_pretrained=args.clip_pretrained
-    )
-    loader = DataLoader(dset, shuffle=False, batch_size=args.batch_size)
+    dataset = MIMICImageDataset(img_path=args.cxr_path)  # load in dataset
+    data_loader = DataLoader(
+        dataset, shuffle=False, batch_size=args.batch_size
+    )  # create dataloader
     print("Loaded in dataset.")
 
     # select top report/sentences
-    y_pred = predict(loader, text_embeddings, model, device, topk=args.topk)
+    y_pred = predict(
+        data_loader, text_embeddings, model, device, topk=args.topk
+    )  # predict
 
-    # save
+    # save reports
     if not os.path.exists(args.out_dir):
         os.makedirs(args.out_dir)
     out_path = args.out_dir + "/generated_reports.csv"
@@ -55,9 +56,11 @@ def get_text_embeddings(corpus_embeddings_path):
         text_embeddings (embedding tensor): Embeddings of the corpus text (reports/sentences)
     """
     # Get the pre-generated text embeddings and corresponding impressions
-    (raw_impressions, text_embeddings) = torch.load(corpus_embeddings_path)
+    (raw_impressions, text_embeddings) = torch.load(
+        corpus_embeddings_path
+    )  # Load the embeddings
 
-    raw_impressions.index = range(len(raw_impressions))
+    raw_impressions.index = range(len(raw_impressions))  # Reset the index
     return (raw_impressions, text_embeddings)
 
 
@@ -75,25 +78,29 @@ def predict(loader, text_embeddings, model, device, topk=1):
     Returns:
         predicted_corpus_indices (np array): Predicted indices of the topk reports/sentences
     """
-    predicted_corpus_indices = torch.zeros([len(loader.dataset), topk]).to(device)
+    predicted_corpus_indices = torch.zeros([len(loader.dataset), topk]).to(
+        device
+    )  # Initialize the predicted corpus indices
     batch_index = 0
     with torch.no_grad():
         for i, data in enumerate(tqdm(loader)):
             images = data["img"].to(device)
 
             # predict
-            image_features = model.encode_image(images)
-            image_features /= image_features.norm(dim=-1, keepdim=True)
-            logits = image_features @ text_embeddings.T
+            image_features = model.encode_image(images)  # get image features
+            image_features /= image_features.norm(
+                dim=-1, keepdim=True
+            )  # normalize image features
+            logits = image_features @ text_embeddings.T  # get logits
             preds = torch.argsort(logits, dim=-1, descending=True)[
                 :, :topk
             ]  # get topk reports
 
             predicted_corpus_indices[batch_index : batch_index + preds.size(0), :] = (
-                preds  # save batch to predictions
+                preds  # update predicted corpus indices
             )
 
-            batch_index += preds.size(0)  # batch size
+            batch_index += preds.size(0)  # update batch index
     return predicted_corpus_indices.to("cpu").numpy()
 
 
@@ -153,12 +160,6 @@ if __name__ == "__main__":
         required=False,
         default=1,
         help="number of top sentences to retrieve",
-    )
-    parser.add_argument(
-        "--clip_pretrained",
-        type=bool,
-        default=True,
-        help="Whether clip model was first pre-trained on natural images, should be same as used for generating corpus embeddings",
     )
     parser.add_argument("--batch_size", type=int, required=False, default=4)
     args = parser.parse_args()

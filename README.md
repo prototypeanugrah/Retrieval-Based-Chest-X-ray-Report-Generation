@@ -47,7 +47,6 @@ The CLIP model checkpoint pre-trained on MIMIC-CXR train set is available here [
 ```
 python gen_corpus_embeddings.py \
     --clip_model_path=<name of clip model state dictionary for generating embeddings> \
-    --clip_pretrained=<whether clip model was first pre-trained on natural images (default is True)> \
     --data_path=<path of csv file containing training corpus (either sentence level or report level)> \
     --output_save_model=<name for saved corpus embeddings (include .pt extension)>
 ```
@@ -60,8 +59,7 @@ python run_test.py \
     --clip_model_path=<name of clip model state dictionary (ending in .pt)> \
     --out_dir=<directory to save outputted generated reports> \
     --cxr_path=<path of X-rays, (.h5 file) for MIMIC-CXR dataset> \
-    --topk=<number of top sentences to retrieve> \
-    --clip_pretrained=<whether clip model was first pre-trained on natural images (default is True)>
+    --topk=<number of top sentences to retrieve>
 ```
 
 ## Generating labels for generated reports
