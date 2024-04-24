@@ -2,6 +2,15 @@
 
 # Chest X-Ray Report Generation using CLIP model
  
+## Project members
+
+```
+Anugrah Vaishnav
+Neha Miryala
+Divij Shivaji Pawar
+Aaron Mailhot
+```
+
 ## Data Preprocessing
 
 ### Data access
