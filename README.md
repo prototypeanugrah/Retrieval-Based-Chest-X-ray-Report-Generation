@@ -94,3 +94,18 @@ python test_acc_batch.py --dir mimic_results/ --bootstrap_dir bootstrap_test/
 ```
 
 Mean F1 score achieved on bootstrapped test data is 0.123 +/- 0.002
+
+
+### Original paper citation
+
+```
+@InProceedings{pmlr-v158-endo21a,
+  title = 	 {Retrieval-Based Chest X-Ray Report Generation Using a Pre-trained Contrastive Language-Image Model},
+  author =       {Endo, Mark and Krishnan, Rayan and Krishna, Viswesh and Ng, Andrew Y. and Rajpurkar, Pranav},
+  booktitle = 	 {Proceedings of Machine Learning for Health},
+  pages = 	 {209--219},
+  year = 	 {2021},
+  volume = 	 {158},
+  series = 	 {Proceedings of Machine Learning Research}
+}
+```
