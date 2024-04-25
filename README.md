@@ -11,6 +11,18 @@ Divij Shivaji Pawar
 Aaron Mailhot
 ```
 
+## Dependencies
+
+```
+Python 3.11.8
+PyTorch 2.2.1
+NumPy 1.26.4
+Pandas 2.2.1
+torchvision 0.17.1
+CLIP 1.0
+PILLOW 9.3.0
+```
+
 ## Data Preprocessing
 
 ### Data access
