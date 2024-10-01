@@ -1,5 +1,3 @@
-# Computing for Health & Medicine - Project
-
 # Chest X-Ray Report Generation using CLIP model
  
 ## Project members
